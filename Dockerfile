@@ -39,6 +39,9 @@ RUN echo "upload_max_filesize = 500M\npost_max_size = 500M" > /usr/local/etc/php
 # Copy source files
 COPY . /var/www/html
 
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html
+
 # Set working directory
 WORKDIR /var/www/html
 
