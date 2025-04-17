@@ -41,8 +41,10 @@ COPY . /var/www/html
 # COPY ./config.php /var/www/html/config.php
 
 # Fix permissions
-RUN chown www-data:www-data /var/www/html/config.php \
-    && chmod 644 /var/www/html/config.php
+RUN if [ -f /var/www/html/config.php ]; then \
+        chown www-data:www-data /var/www/html/config.php && \
+        chmod 644 /var/www/html/config.php; \
+    fi
 
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html
