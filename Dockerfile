@@ -38,7 +38,7 @@ RUN echo "upload_max_filesize = 500M\npost_max_size = 500M" > /usr/local/etc/php
 
 # Copy source files
 COPY . /var/www/html
-COPY ./config.php /var/www/html/config.php
+# COPY ./config.php /var/www/html/config.php
 
 # Fix permissions
 RUN chown www-data:www-data /var/www/html/config.php \
