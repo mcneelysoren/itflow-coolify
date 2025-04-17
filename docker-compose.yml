@@ -4,8 +4,6 @@ services:
   itflow:
     build: .
     container_name: itflow
-    ports:
-      - "8080:80"
     environment:
       ITFLOW_NAME: "Imperium ITFlow"
       ITFLOW_URL: "http://localhost:8080"
