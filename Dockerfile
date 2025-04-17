@@ -1,6 +1,6 @@
-FROM php:8.1-apache
+FROM php:8.3-apache
 
-# Install system tools and PHP extensions
+# Install required system packages and PHP build dependencies
 RUN apt-get update && apt-get install -y \
     unzip \
     git \
@@ -15,6 +15,8 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libc-client-dev \
     libkrb5-dev \
+    libcurl4-openssl-dev \
+    pkg-config \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install \
         mysqli \
@@ -28,13 +30,13 @@ RUN apt-get update && apt-get install -y \
     && pecl install mailparse \
     && docker-php-ext-enable mailparse
 
-# Enable Apache mod_rewrite
+# Enable Apache modules
 RUN a2enmod rewrite
 
-# Set upload limits
+# Set PHP limits for ITFlow
 RUN echo "upload_max_filesize = 500M\npost_max_size = 500M" > /usr/local/etc/php/conf.d/uploads.ini
 
-# Copy source code
+# Copy source files
 COPY . /var/www/html
 
 # Set working directory
