@@ -30,27 +30,27 @@ RUN apt-get update && apt-get install -y \
     && pecl install mailparse \
     && docker-php-ext-enable mailparse
 
-# Enable Apache modules
+# Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Set PHP limits for ITFlow
+# Set PHP upload limits
 RUN echo "upload_max_filesize = 500M\npost_max_size = 500M" > /usr/local/etc/php/conf.d/uploads.ini
 
-# Copy source files
+# Copy application code
 COPY . /var/www/html
 
-# Fix full app permissions
+# Fix general app permissions (for uploads, storage, etc.)
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html
 
-# Add entrypoint script
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# Force container to run as root (so we can fix mounted config.php on startup)
+USER root
 
-# Set entrypoint
-ENTRYPOINT ["/entrypoint.sh"]
-
-# Working directory
-WORKDIR /var/www/html
-
-EXPOSE 80
+# Runtime fix for config.php permissions and start Apache
+CMD ["bash", "-c", "\
+  if [ -f /var/www/html/config.php ]; then \
+    echo '[startup] Fixing config.php permissions...'; \
+    chown www-data:www-data /var/www/html/config.php && \
+    chmod 644 /var/www/html/config.php; \
+  fi && \
+  apache2-foreground"]
