@@ -1,11 +1,19 @@
 #!/bin/bash
 
-# Fix permission on config.php if it exists
+echo "[entrypoint] Starting container..."
+
 if [ -f /var/www/html/config.php ]; then
-    echo "[entrypoint] Fixing permissions on config.php..."
+    echo "[entrypoint] config.php found — fixing permissions..."
+    echo "[entrypoint] BEFORE:"
+    ls -l /var/www/html/config.php
+
     chown www-data:www-data /var/www/html/config.php
     chmod 644 /var/www/html/config.php
+
+    echo "[entrypoint] AFTER:"
+    ls -l /var/www/html/config.php
+else
+    echo "[entrypoint] config.php not found."
 fi
 
-# Start Apache (default CMD)
 exec apache2-foreground
