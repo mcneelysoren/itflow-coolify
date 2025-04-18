@@ -8,7 +8,7 @@ if [ -f /var/www/html/config.php ]; then
     ls -l /var/www/html/config.php
 
     chown www-data:www-data /var/www/html/config.php
-    chmod 644 /var/www/html/config.php
+    chmod 777 -R /var/www/html/config.php
 
     echo "[entrypoint] AFTER:"
     ls -l /var/www/html/config.php
