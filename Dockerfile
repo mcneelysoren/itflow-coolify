@@ -38,18 +38,19 @@ RUN echo "upload_max_filesize = 500M\npost_max_size = 500M" > /usr/local/etc/php
 
 # Copy source files
 COPY . /var/www/html
-# COPY ./config.php /var/www/html/config.php
 
-# Fix permissions
-RUN if [ -f /var/www/html/config.php ]; then \
-        chown www-data:www-data /var/www/html/config.php && \
-        chmod 644 /var/www/html/config.php; \
-    fi
-
+# Fix full app permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html
 
-# Set working directory
+# Add entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Set entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
+
+# Working directory
 WORKDIR /var/www/html
 
 EXPOSE 80
